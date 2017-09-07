@@ -1,0 +1,18 @@
+{
+    "Terminate": {
+        "Instances": {
+            "Environment": "UAT"
+        },
+        "Autoscaling": {
+            "Environment": "UAT"
+        }
+    },
+    "Stop": {
+        "Instances": {
+            "Environment": "UAT"
+        },
+        "Autoscaling": {
+            "Environment": "UAT"
+        }
+    }
+}
