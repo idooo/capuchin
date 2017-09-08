@@ -10,9 +10,6 @@
     "Stop": {
         "Instances": {
             "Environment": "UAT"
-        },
-        "Autoscaling": {
-            "Environment": "UAT"
         }
     }
 }
