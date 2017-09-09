@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"log"
 
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/idooo/capuchin/core"
@@ -21,10 +22,15 @@ func main() {
 		SharedConfigState: session.SharedConfigEnable,
 	}))
 
-	core.RestoreInstances(sess)
+	notificationChannel, err := core.InitialiseCloudwatchLogging(sess)
+	if err != nil {
+		log.Printf("Can't create notification channel %s", err)
+	}
 
-	core.ThrowBanana(sess, configuration.Terminate)
+	core.RestoreInstances(sess, notificationChannel)
 
-	core.PokeWithAStick(sess, configuration.Stop)
+	core.ThrowBanana(sess, configuration.Terminate, notificationChannel)
+
+	core.PokeWithAStick(sess, configuration.Stop, notificationChannel)
 
 }
