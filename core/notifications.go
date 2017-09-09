@@ -127,6 +127,7 @@ func listenForChannel(service *cloudwatchlogs.CloudWatchLogs, logGroupName *stri
 	}
 }
 
+// InitialiseCloudwatchLogging - creates required Cloudwatch resources and establish notification channel
 func InitialiseCloudwatchLogging(currentSession *session.Session) (*chan string, error) {
 	service := cloudwatchlogs.New(currentSession)
 	logGroupName, err := createLogGroup(service)

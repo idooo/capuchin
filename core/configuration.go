@@ -6,11 +6,13 @@ import (
 	"os"
 )
 
+// StateControlConfiguration - describes part of the configuration responsible for state control
 type StateControlConfiguration struct {
 	Instances   *map[string]string
 	Autoscaling *map[string]string
 }
 
+// Configuration - describes configuration file
 type Configuration struct {
 	Terminate *StateControlConfiguration
 	Stop      *StateControlConfiguration
