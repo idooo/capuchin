@@ -32,7 +32,7 @@ func isEligibleInstance(instance *ec2.Instance, requiredTags *map[string]string)
 
 	// Only accept instances that have running state
 	runningCode := int64(16)
-	if instance.State.Code != &runningCode {
+	if *instance.State.Code != runningCode {
 		return false
 	}
 
@@ -103,14 +103,20 @@ func retrieveEligibleInstances(currentSession *session.Session, group *autoscali
 		log.Fatal("Error", err)
 	}
 
-	var eligibleInstances []*ec2.Instance
-	for _, instance := range result.Reservations[0].Instances {
+	var instances []*ec2.Instance
+	for _, reservation := range result.Reservations {
+		for _, instance := range reservation.Instances {
+			instances = append(instances, instance)
+		}
+	}
 
+	var eligibleInstances []*ec2.Instance
+	for _, instance := range instances {
 		if isEligibleInstance(instance, requiredTags) {
 			eligibleInstances = append(eligibleInstances, instance)
 		}
 	}
-	log.Printf("Found %d of %d eligible instances", len(eligibleInstances), len(result.Reservations[0].Instances))
+	log.Printf("Found %d of %d eligible instances", len(eligibleInstances), len(instances))
 	return eligibleInstances
 }
 
