@@ -25,10 +25,16 @@ func main() {
 	notificationChannel := core.GetNotificationChannel(sess)
 	*notificationChannel <- "Capuchin has been awakened..."
 
-	core.RestoreInstances(sess, configuration.Restore)
+	// Do what you have to do
+	if configuration.Restore != nil {
+		core.RestoreInstances(sess, configuration.Restore)
+	}
 
-	core.ThrowBanana(sess, configuration.Terminate)
+	if configuration.Terminate != nil {
+		core.ThrowBanana(sess, configuration.Terminate)
+	}
 
-	core.PokeWithAStick(sess, configuration.Stop)
-
+	if configuration.Stop != nil {
+		core.PokeWithAStick(sess, configuration.Stop)
+	}
 }
