@@ -1,15 +1,27 @@
 {
     "Terminate": {
         "Instances": {
-            "Environment": "UAT"
+            "Environment": "UAT",
+            "Capuchin": "eligible-to-destroy"
         },
         "Autoscaling": {
-            "Environment": "UAT"
-        }
+            "Environment": "UAT",
+            "Capuchin": "eligible-to-destroy"
+        },
+        "Tag": "TerminatedByCapuchin"
     },
     "Stop": {
         "Instances": {
-            "Environment": "UAT"
-        }
+            "Environment": "UAT",
+            "Capuchin": "eligible-to-stop"
+        },
+        "Tag": "StoppedByCapuchin"
+    },
+    "Restore": {
+        "Instances": {
+            "Environment": "UAT",
+            "StoppedByCapuchin": "true"
+        },
+        "Tag": "StoppedByCapuchin"
     }
 }

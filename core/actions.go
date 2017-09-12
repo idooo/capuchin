@@ -20,13 +20,19 @@ func ThrowBanana(currentSession *session.Session, config *StateControlConfigurat
 
 	pickedInstance, err := PickInstance(currentSession, pickedGroup, config.Instances)
 	if err != nil {
+		*notificationChannel <- err.Error()
 		return err
 	}
 
 	*notificationChannel <- fmt.Sprintf("Throwing banana at %s", *pickedInstance.InstanceId)
 
-	// TODO terminate instance
-	// add tag that terminated by a monkey
+	err = TerminateInstance(currentSession, pickedInstance, config.Tag)
+	if err != nil {
+		*notificationChannel <- err.Error()
+		return err
+	}
+
+	*notificationChannel <- fmt.Sprintf("Instance %s has been killed by a banana", *pickedInstance.InstanceId)
 
 	return nil
 }
@@ -39,18 +45,46 @@ func PokeWithAStick(currentSession *session.Session, config *StateControlConfigu
 
 	pickedInstance, err := PickInstance(currentSession, nil, config.Instances)
 	if err != nil {
+		*notificationChannel <- err.Error()
 		return err
 	}
 
 	*notificationChannel <- fmt.Sprintf("Poking %s with a stick", *pickedInstance.InstanceId)
 
-	// TODO stop instance
-	// add tag that stopped by a monkey
+	err = StopInstance(currentSession, pickedInstance, config.Tag)
+	if err != nil {
+		*notificationChannel <- err.Error()
+		return err
+	}
+
+	*notificationChannel <- fmt.Sprintf("Instance %s has been stopped by a stick", *pickedInstance.InstanceId)
 
 	return nil
 }
 
 // RestoreInstances - starts previously stopped instances
-func RestoreInstances(sess *session.Session) {
-	// TODO: implement
+func RestoreInstances(currentSession *session.Session, config *StateControlConfiguration) error {
+
+	notificationChannel := GetNotificationChannel(currentSession)
+	*notificationChannel <- fmt.Sprintf("Attempting to restore %v", config.Instances)
+
+	pickedInstances, err := PickStoppedInstances(currentSession, config.Instances)
+	if err != nil {
+		*notificationChannel <- err.Error()
+		return err
+	}
+
+	var instanceIds []*string
+	for _, instance := range pickedInstances {
+		instanceIds = append(instanceIds, instance.InstanceId)
+	}
+	*notificationChannel <- fmt.Sprintf("Restoring instances %v ...", instanceIds)
+
+	err = StartInstances(currentSession, pickedInstances, config.Tag)
+	if err != nil {
+		*notificationChannel <- err.Error()
+		return err
+	}
+
+	return nil
 }

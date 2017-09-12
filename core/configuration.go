@@ -10,12 +10,14 @@ import (
 type StateControlConfiguration struct {
 	Instances   *map[string]string
 	Autoscaling *map[string]string
+	Tag         *string
 }
 
 // Configuration - describes configuration file
 type Configuration struct {
 	Terminate *StateControlConfiguration
 	Stop      *StateControlConfiguration
+	Restore   *StateControlConfiguration
 }
 
 // ReadConfigiguration - gets configuration file from the specified location and
