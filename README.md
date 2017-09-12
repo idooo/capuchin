@@ -1,10 +1,10 @@
 # Capuchin
 
-Small and simple Chaos Monkey inspired by Netflix Simian Army
+Small and simple Chaos Monkey for AWS inspired by Netflix Simian Army
 
-- Can terminate tagged instances in autoscaling groups
-- Can stop tagged instances
-- Can restore stopped instances
+- Can terminate tagged EC2 instances in autoscaling groups
+- Can stop tagged EC2 instances
+- Can restore stopped EC2 instances
 - Sends notifications to Cloudwatch Logs Streams (capuchin-log-group -> capuchin-log-stream), creates it if needed
 
 ## install
