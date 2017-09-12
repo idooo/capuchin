@@ -3,11 +3,23 @@ package core
 import (
 	"errors"
 	"log"
+	"sync"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/cloudwatchlogs"
 )
+
+var notificationChannel *chan string
+var once sync.Once
+
+// GetNotificationChannel - returns notification channel to publish messages to Cloudwatch
+func GetNotificationChannel(currentSession *session.Session) *chan string {
+	once.Do(func() {
+		notificationChannel, _ = initialiseCloudwatchLogging(currentSession)
+	})
+	return notificationChannel
+}
 
 func getLogGroup(service *cloudwatchlogs.CloudWatchLogs, logGroupName *string) (*cloudwatchlogs.LogGroup, error) {
 	search := &cloudwatchlogs.DescribeLogGroupsInput{
@@ -127,15 +139,17 @@ func listenForChannel(service *cloudwatchlogs.CloudWatchLogs, logGroupName *stri
 	}
 }
 
-// InitialiseCloudwatchLogging - creates required Cloudwatch resources and establish notification channel
-func InitialiseCloudwatchLogging(currentSession *session.Session) (*chan string, error) {
+func initialiseCloudwatchLogging(currentSession *session.Session) (*chan string, error) {
 	service := cloudwatchlogs.New(currentSession)
 	logGroupName, err := createLogGroup(service)
 	if err != nil {
+		log.Printf("Can't create notification channel %s", err)
 		return nil, err
 	}
+
 	logStreamName, err := createLogStream(service, logGroupName)
 	if err != nil {
+		log.Printf("Can't create notification channel %s", err)
 		return nil, err
 	}
 

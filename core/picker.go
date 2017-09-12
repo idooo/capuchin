@@ -2,6 +2,7 @@ package core
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"math/rand"
 	"time"
@@ -52,24 +53,21 @@ func isEligibleInstance(instance *ec2.Instance, requiredTags *map[string]string)
 
 func retriveEligibleAutoscalingGroup(currentSession *session.Session, requiredTags *map[string]string) []*autoscaling.Group {
 	svc := autoscaling.New(currentSession)
+	notificationChannel := GetNotificationChannel(currentSession)
 	input := &autoscaling.DescribeAutoScalingGroupsInput{
 		MaxRecords: &[]int64{100}[0],
 	}
 
 	result, err := svc.DescribeAutoScalingGroups(input)
 	if err != nil {
+		var errFormat string
 		if aerr, ok := err.(awserr.Error); ok {
-			switch aerr.Code() {
-			case autoscaling.ErrCodeInvalidNextToken:
-				log.Fatal(autoscaling.ErrCodeInvalidNextToken, aerr.Error())
-			case autoscaling.ErrCodeResourceContentionFault:
-				log.Fatal(autoscaling.ErrCodeResourceContentionFault, aerr.Error())
-			default:
-				log.Fatal(aerr.Error())
-			}
+			errFormat = aerr.Error()
 		} else {
-			log.Fatal(err.Error())
+			errFormat = err.Error()
 		}
+		*notificationChannel <- errFormat
+		log.Fatal(errFormat)
 	}
 
 	var eligibleAutoScalingGroups []*autoscaling.Group
@@ -78,7 +76,8 @@ func retriveEligibleAutoscalingGroup(currentSession *session.Session, requiredTa
 			eligibleAutoScalingGroups = append(eligibleAutoScalingGroups, group)
 		}
 	}
-	log.Printf("Found %d of %d eligible autoscaling groups", len(eligibleAutoScalingGroups), len(result.AutoScalingGroups))
+
+	*notificationChannel <- fmt.Sprintf("Found %d of %d eligible autoscaling groups", len(eligibleAutoScalingGroups), len(result.AutoScalingGroups))
 	return eligibleAutoScalingGroups
 }
 
@@ -86,6 +85,7 @@ func retrieveEligibleInstances(currentSession *session.Session, group *autoscali
 	svc := ec2.New(currentSession)
 
 	input := &ec2.DescribeInstancesInput{}
+	notificationChannel := GetNotificationChannel(currentSession)
 
 	if group != nil {
 		var instanceIds []*string
@@ -100,6 +100,7 @@ func retrieveEligibleInstances(currentSession *session.Session, group *autoscali
 
 	result, err := svc.DescribeInstances(input)
 	if err != nil {
+		*notificationChannel <- fmt.Sprint("Error", err)
 		log.Fatal("Error", err)
 	}
 
@@ -116,7 +117,7 @@ func retrieveEligibleInstances(currentSession *session.Session, group *autoscali
 			eligibleInstances = append(eligibleInstances, instance)
 		}
 	}
-	log.Printf("Found %d of %d eligible instances", len(eligibleInstances), len(instances))
+	*notificationChannel <- fmt.Sprintf("Found %d of %d eligible instances", len(eligibleInstances), len(instances))
 	return eligibleInstances
 }
 

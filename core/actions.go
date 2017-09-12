@@ -7,16 +7,18 @@ import (
 )
 
 // ThrowBanana - throws a banana to terminate eligible instance in Autoscaling group
-func ThrowBanana(sess *session.Session, config *StateControlConfiguration, notificationChannel *chan string) error {
+func ThrowBanana(currentSession *session.Session, config *StateControlConfiguration) error {
+
+	notificationChannel := GetNotificationChannel(currentSession)
 	*notificationChannel <- fmt.Sprintf("Attempting to throw banana at something %v -> %v", config.Autoscaling, config.Instances)
 
-	pickedGroup, err := PickAutoscalingGroup(sess, config.Autoscaling)
+	pickedGroup, err := PickAutoscalingGroup(currentSession, config.Autoscaling)
 	if err != nil {
 		return err
 	}
 	*notificationChannel <- fmt.Sprintf("Picked group: %s", *pickedGroup.AutoScalingGroupName)
 
-	pickedInstance, err := PickInstance(sess, pickedGroup, config.Instances)
+	pickedInstance, err := PickInstance(currentSession, pickedGroup, config.Instances)
 	if err != nil {
 		return err
 	}
@@ -30,10 +32,12 @@ func ThrowBanana(sess *session.Session, config *StateControlConfiguration, notif
 }
 
 // PokeWithAStick - stops an eligible instance
-func PokeWithAStick(sess *session.Session, config *StateControlConfiguration, notificationChannel *chan string) error {
+func PokeWithAStick(currentSession *session.Session, config *StateControlConfiguration) error {
 
+	notificationChannel := GetNotificationChannel(currentSession)
 	*notificationChannel <- fmt.Sprintf("Attempting to poke something %v with a stick", config.Instances)
-	pickedInstance, err := PickInstance(sess, nil, config.Instances)
+
+	pickedInstance, err := PickInstance(currentSession, nil, config.Instances)
 	if err != nil {
 		return err
 	}
@@ -47,6 +51,6 @@ func PokeWithAStick(sess *session.Session, config *StateControlConfiguration, no
 }
 
 // RestoreInstances - starts previously stopped instances
-func RestoreInstances(sess *session.Session, notificationChannel *chan string) {
+func RestoreInstances(sess *session.Session) {
 	// TODO: implement
 }
