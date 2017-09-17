@@ -1,17 +1,16 @@
 language: go
 go:
-    - 1.8.x
+- 1.8.x
 install:
-    - go get -u github.com/aws/aws-sdk-go
+- go get -u github.com/aws/aws-sdk-go
 script:
-    - go build
+- go build
 deploy:
   provider: releases
   skip_cleanup: true
   api_key:
-    secure: WZdYs0WGnKvN7dcG1W52K0EF1lShlPlrAp0dsnZ0rRE03xOphEl4HHNPrKDyaareUzZODX2CmB8Gz3K0Kb+GGO0WTQNP/SNwl5Eh1fCkW8ODFQkSqu6C6o/zE2EnE+goPGrCA4wdYhZHEM3PqTCjHVzpZQsAYPOweCaji7tLENd9k4mHkfm0dm8tYz0CcSPHH0E8IFWAxB78+oVftI6D6VziPhhmwpeTNM4qTUH2kDHWFWSlTv5RC5FyfbhXraa2ta2/k4AbyjhEc9EZK3dX1dxCSUhfoddepc8DpdO0O+4/Mdxl3ieLLJj/0i94sYxg/W4xw13t/Dbtq350bXvupzCiksCMBcYverDER70dToeHqdWFmJXX3hB+f0qTZjvY3BzfQ/kXD0sEuseRqmjpPWScJL8laxKjzqqiFpwI44prbnhJByxp/P6oWuL8rQlgYpqkrvJyXa90SgYkj1kkH2Qzxc/tbosZfthR/PGyVq58E0Mg9fMx3F4LPnIEocAcz1fiwEiy8+CnrH1KSfb1+O06c5nPHsGWeAy6h+V3UQChDf2DmChzLsdVU501c7S86LoY8stAMrm6OYq0fy2U50i6Sc9JVcwivK3kCvcB5FI10PoxxPQvQNySs5D7y41lrJMdf3dC8Gf70zUsgKKTe4FknohTV57+0xVBHlXJM9Q=
-  file:
-    - capuchin
+    secure: K6w5ZBLXFDRUJzwCU6g/SyEcKXtTTE8ZQUo/qBEXXRPORYyOSQGtfEHULlPTIaEg4dTadXZaGTwU4lv2Av/awF4oMextQgHf+CjavWhLZxnJkN6Skdla7VfQ92HNFDQzIpE7o3R6lfeBRmsmM2ygBGjz+2I0yfhjX/ULrFPgVFlaI8vZRZZHxK4bEbsL30EG58AhYSj9qom1WEsvDtj0wHOkVX8MKRVfrWzEBlFpv+2Ba2rGwjdUuSTIi6Jy8mpXF2bRbLSPbKWN6u0iKAN7zO2SD2g3saK8mUHqKT+rhSGlr4VIbnvUh9+jtmq2oHkJOpdSCahtc+0gyoREFlR5gK4cA1hzlCzETKQdBX/jdt/Zmmpvhqqd8HkhKFSr9RUH0ifwi5EPMtZUK4cH96hve3Cvn6c7A/x/9roQRYPvu9UbrNMxuGs/eAwwHGU9+xr2y6y6eTr/7aq2Z8DV20kYxOcep0y4b2B10Juubl8l+8mnOL9ypiDLFkkput79SXLRgl3WBV59JS0ij//ImqXudVLi8YSpKrO21/It83NBlHwdFfgcqgqSUBq6OI0C1xFma9RXKO/AJLu5p7RKZBKLyEgU3FwWAm4HzjPvSzmmYybOxEzYvA3xV5E4MQlMUYnEP0/4YrHNPkmLORxseCKkw/6Ytz66CyAM5ZJUKKfVD3A=
+  file: capuchin
   on:
     repo: idooo/capuchin
     tags: true
