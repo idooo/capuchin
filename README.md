@@ -1,4 +1,4 @@
-# Capuchin
+# Capuchin  [![Build Status](https://travis-ci.org/idooo/capuchin.svg?branch=master)](https://travis-ci.org/idooo/capuchin)
 
 Small and simple Chaos Monkey for AWS inspired by Netflix Simian Army
 
@@ -7,12 +7,12 @@ Small and simple Chaos Monkey for AWS inspired by Netflix Simian Army
 - Can restore stopped EC2 instances
 - Sends logs to Cloudwatch Logs Streams (capuchin-log-group -> capuchin-log-stream), creates it if needed
 
-## install
+## Run
 
-You have to install one dependency:
+Download latest [release](https://github.com/idooo/capuchin/releases) for your platform. You have to pass configuration file like this:
 
 ```
-go get -u github.com/aws/aws-sdk-go
+./capuchin -config ./my-configuration.json
 ```
 
 ## Configuration 
@@ -57,6 +57,14 @@ pick one of its instances there with tags: `Environment = UAT` AND `Capuchin = e
 tagging it with `TerminatedByCapuchin = true`
 - Pick one of instances with tags: `Environment = INT` AND `Capuchin = eligible-to-stop` and STOP IT
 tagging it with `StoppedByCapuchin = true`
+
+## Build
+
+You have to install one dependency:
+
+```
+go get -u github.com/aws/aws-sdk-go
+```
 
 # License
 
