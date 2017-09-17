@@ -1,16 +1,22 @@
 language: go
 go:
 - 1.8.x
+before_install:
+- go get github.com/mitchellh/gox
 install:
 - go get -u github.com/aws/aws-sdk-go
+- go get github.com/mitchellh/gox
 script:
-- go build
+- gox -os="linux darwin windows" -arch="amd64" -output="capuchin.{{.OS}}.{{.Arch}}"
 deploy:
   provider: releases
   skip_cleanup: true
   api_key:
     secure: K6w5ZBLXFDRUJzwCU6g/SyEcKXtTTE8ZQUo/qBEXXRPORYyOSQGtfEHULlPTIaEg4dTadXZaGTwU4lv2Av/awF4oMextQgHf+CjavWhLZxnJkN6Skdla7VfQ92HNFDQzIpE7o3R6lfeBRmsmM2ygBGjz+2I0yfhjX/ULrFPgVFlaI8vZRZZHxK4bEbsL30EG58AhYSj9qom1WEsvDtj0wHOkVX8MKRVfrWzEBlFpv+2Ba2rGwjdUuSTIi6Jy8mpXF2bRbLSPbKWN6u0iKAN7zO2SD2g3saK8mUHqKT+rhSGlr4VIbnvUh9+jtmq2oHkJOpdSCahtc+0gyoREFlR5gK4cA1hzlCzETKQdBX/jdt/Zmmpvhqqd8HkhKFSr9RUH0ifwi5EPMtZUK4cH96hve3Cvn6c7A/x/9roQRYPvu9UbrNMxuGs/eAwwHGU9+xr2y6y6eTr/7aq2Z8DV20kYxOcep0y4b2B10Juubl8l+8mnOL9ypiDLFkkput79SXLRgl3WBV59JS0ij//ImqXudVLi8YSpKrO21/It83NBlHwdFfgcqgqSUBq6OI0C1xFma9RXKO/AJLu5p7RKZBKLyEgU3FwWAm4HzjPvSzmmYybOxEzYvA3xV5E4MQlMUYnEP0/4YrHNPkmLORxseCKkw/6Ytz66CyAM5ZJUKKfVD3A=
-  file: capuchin
+  file: 
+    - capuchin.windows.amd64.exe
+    - capuchin.darwin.amd64
+    - capuchin.linux.amd64
   on:
     repo: idooo/capuchin
     tags: true
